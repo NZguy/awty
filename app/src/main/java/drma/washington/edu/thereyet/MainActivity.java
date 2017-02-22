@@ -21,12 +21,12 @@ import android.widget.Toast;
 import java.util.Locale;
 
 public class MainActivity extends Activity {
+    private AlarmApp app;
 
     private EditText inputPhone;
     private EditText inputMessage;
+    private EditText inputInterval;
     private Button startButton;
-
-    private PendingIntent pendingIntent;
 
     private boolean isSending;
 
@@ -37,11 +37,11 @@ public class MainActivity extends Activity {
 
         inputMessage = (EditText) findViewById(R.id.inputMessage);
         inputPhone = (EditText) findViewById(R.id.inputPhone);
+        inputInterval = (EditText) findViewById(R.id.inputInterval);
         startButton = (Button) findViewById(R.id.btnStart);
 
         isSending = false;
-        Intent alarmIntent = new Intent(MainActivity.this, AlarmReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        app = (AlarmApp) getApplicationContext();
 
         inputPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
@@ -54,13 +54,16 @@ public class MainActivity extends Activity {
     }
 
     private void toggleSending(){
+        String message = inputMessage.getText().toString();
+        String phoneNumber = inputPhone.getText().toString();
+        String interval = inputInterval.getText().toString();
+
         if(!isSending){
-            if(inputsValid()){
+            if(inputsValid(message, phoneNumber, interval)){
                 // If in not sending yet and inputs are valid
-                AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                int interval = 4000;
-                manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
-                        interval, pendingIntent);
+                app.getAlarmManager().setVariables(message, phoneNumber,
+                    Integer.parseInt(interval) * (1000));
+                app.getAlarmManager().setAlarm();
 
                 Toast.makeText(this, "Alarm Set", Toast.LENGTH_SHORT).show();
                 Log.i("MainActivity", "Alarm Set at " + System.currentTimeMillis());
@@ -68,23 +71,42 @@ public class MainActivity extends Activity {
                 isSending = true;
             }else{
                 // If my input is not valid
-
+                Toast.makeText(this, "Inputs are invalid", Toast.LENGTH_SHORT).show();
             }
         }else{
             // If I want to stop the alarm
-            AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            manager.cancel(pendingIntent);
+            app.getAlarmManager().stopAlarm();
 
-            Toast.makeText(this, "Alarm Cancelled", Toast.LENGTH_SHORT).show();
-            Log.i("MainActivity", "Alarm Cancelled at " + System.currentTimeMillis());
+            Toast.makeText(this, "Alarm Stopped", Toast.LENGTH_SHORT).show();
+            Log.i("MainActivity", "Alarm Stopped at " + System.currentTimeMillis());
             startButton.setText("Start");
             isSending = false;
         }
     }
 
-    private boolean inputsValid(){
+    private boolean inputsValid(String message, String phoneNumber, String interval){
+        boolean isValid = true;
 
+        if(message == null || message.isEmpty()){
+            Log.d("MainActivity", "message is empty, not valid");
+            // message is empty, not valid
+            isValid = false;
+        }
+        if(phoneNumber == null || phoneNumber.isEmpty()){
+            Log.d("MainActivity", "phoneNumber is empty, not valid");
+            // phoneNumber is empty, not valid
+            // This needs to be redone when getting an actual number
+            isValid = false;
+        }
+        int intInterval;
+        try{
+            intInterval = Integer.parseInt(interval);
+        }catch (NumberFormatException e){
+            Log.d("MainActivity", "The interval wasnt a number, invalid");
+            // The interval wasnt a number, invalid
+            isValid = false;
+        }
 
-        return true;
+        return isValid;
     }
 }

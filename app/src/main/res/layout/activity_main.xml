@@ -13,17 +13,6 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="phone"
-        android:ems="10"
-        android:id="@+id/inputPhone"
-        android:layout_below="@+id/inputMessage"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:hint="phone" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:ems="10"
         android:id="@+id/inputMessage"
@@ -31,6 +20,17 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:ems="10"
+        android:id="@+id/inputPhone"
+        android:layout_below="@+id/inputMessage"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:hint="phone" />
 
     <EditText
         android:layout_width="wrap_content"

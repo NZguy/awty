@@ -62,7 +62,7 @@ public class MainActivity extends Activity {
             if(inputsValid(message, phoneNumber, interval)){
                 // If in not sending yet and inputs are valid
                 app.getAlarmManager().setVariables(message, phoneNumber,
-                    Integer.parseInt(interval) * (1000));
+                    Integer.parseInt(interval) * (60 * 1000));
                 app.getAlarmManager().setAlarm();
 
                 Toast.makeText(this, "Alarm Set", Toast.LENGTH_SHORT).show();

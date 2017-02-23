@@ -46,6 +46,8 @@ public class ExactAlarmManager {
     }
 
     public void setAlarm(){
+        // Setting the next alarm doesn't seems to have a delay
+        // This may be due ti the time it takes to set the next alarm?
         Log.d("AlarmManager", "Setting next alarm");
         manager.set(AlarmManager.RTC_WAKEUP, (System.currentTimeMillis() + interval), pendingIntent);
     }

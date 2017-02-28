@@ -3,7 +3,9 @@ package drma.washington.edu.thereyet;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -25,7 +27,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         Log.i("AlarmReciever", "Intent Recieved at " + System.currentTimeMillis());
         //Toast.makeText(context, phoneNumber + ": " + message, Toast.LENGTH_SHORT).show();
-        sendToast(message, phoneNumber, context);
+        sendMessage(message, phoneNumber, context);
         /**
          * Creating any more complicated toast seems to require access to the main activity
          * not sure how to do this yet, so I will hold off.
@@ -45,7 +47,7 @@ public class AlarmReceiver extends BroadcastReceiver {
      *
      * @param context
      */
-    public void sendToast(String message, String phoneNumber, Context context){
+    public void sendMessage(String message, String phoneNumber, Context context){
         LayoutInflater inflater = LayoutInflater.from(context);
         View layout = inflater.inflate(R.layout.custom_toast, null);
         TextView caption = (TextView) layout.findViewById(R.id.toast_caption);
@@ -58,5 +60,15 @@ public class AlarmReceiver extends BroadcastReceiver {
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(layout);
         toast.show();
+
+        String phoneDigits = phoneNumber.replaceAll("[^\\d]", "");
+
+//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + phoneDigits));
+//        intent.putExtra("sms_body", message);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        context.startActivity(intent);
+
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phoneDigits, null, message, null, null);
     }
 }
